@@ -1,0 +1,23 @@
+name: Build and upload artifact
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - run: npm install --global corepack@latest
+      - run: corepack enable pnpm
+      - run: corepack use pnpm@latest-10
+      - run: pnpm install
+      - run: pnpm build:firefox
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: firefox-extension
+          path: .output/firefox-mv2*
